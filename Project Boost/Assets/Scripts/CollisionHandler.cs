@@ -3,35 +3,70 @@ using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
 {
-    [SerializeField]
-    float levelChangeDelay = 5f;
-private void OnCollisionEnter(Collision other)
-{
+    AudioSource sound;
+    ParticleSystem particles;
+
+    [SerializeField]    AudioClip deathExplosion;
+    [SerializeField]    AudioClip successNoise;
+    [SerializeField]    ParticleSystem deathExplosionParticles;
+    [SerializeField]    ParticleSystem successParticles;
+
+    [SerializeField]    float levelChangeDelay = 5f;
+
+    bool isTransitioning = false;
+
+    void Start()
+    {
+        particles = GetComponent<ParticleSystem>();
+        sound = GetComponent<AudioSource>();
+    }
+
+ void OnCollisionEnter(Collision other)
+
+    {
+        if(isTransitioning)
+        {
+            return;
+        }
         switch(other.gameObject.tag)
-        
         {
             case "Friendly":
                 Debug.Log("This is Friendly");
             break;
             case "Finish":
-                Debug.Log("This is end");
-                Invoke("NextLevel", levelChangeDelay);
+            StartSuccessSequence();
             break;
             case "Fuel":
                 Debug.Log("This is Fuel");
             break;
             default:
                 StartCrashSequence();
-                break;
+            break;
         }
-}
+    }
 
-    void StartCrashSequence()
+    private void StartCrashSequence()
     {
-        GetComponent<AudioSource>().Stop();
+        sound.Stop();
+        isTransitioning = true;
+        sound.PlayOneShot(deathExplosion);
+        deathExplosionParticles.Play();
         GetComponent<Movement>().enabled = false;
         Debug.Log("You blew Up");
-        Invoke("ReloadLevel", 5f);
+        Invoke("ReloadLevel", levelChangeDelay);
+    }
+
+    private void StartSuccessSequence()  
+    {
+        sound.Stop();
+
+        isTransitioning = true;
+        GetComponent<Movement>().enabled = false;
+        GetComponent<Movement>().enabled = false;
+        sound.PlayOneShot(successNoise);
+        successParticles.Play();
+        Debug.Log("This is end");
+        Invoke("NextLevel", levelChangeDelay);
     }
 
     private void ReloadLevel()
