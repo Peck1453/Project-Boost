@@ -37,15 +37,7 @@ public class Movement : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.Space))
         {
-            rigidBody.AddRelativeForce(Vector3.up*mainThrust*Time.deltaTime);
-            if(!sound.isPlaying)
-            {
-            sound.PlayOneShot(thrusterSound);
-            }
-            if(!mainThrusterParticles.isPlaying)
-            {
-            mainThrusterParticles.Play();
-            }
+            StartThrusting();
         }
         else
         {
@@ -58,25 +50,47 @@ public class Movement : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.A))
         {
-            Rotate(-directionalThrust);
-            if(!leftThrusterParticles.isPlaying)
-            {
-            leftThrusterParticles.Play();
-            }
+            RotateLeft();
         }
 
         else if(Input.GetKey(KeyCode.D))
         {
-            Rotate(directionalThrust);
-            if(!rightThrusterParticles.isPlaying)
-            {
-            rightThrusterParticles.Play();
-            }
+            RotateRight();
         }
         else
         {
        rightThrusterParticles.Stop();
        leftThrusterParticles.Stop();
+        }
+    }
+        private void StartThrusting()
+    {
+        rigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+        if (!sound.isPlaying)
+        {
+            sound.PlayOneShot(thrusterSound);
+        }
+        if (!mainThrusterParticles.isPlaying)
+        {
+            mainThrusterParticles.Play();
+        }
+    }
+
+    private void RotateRight()
+    {
+        Rotate(directionalThrust);
+        if (!rightThrusterParticles.isPlaying)
+        {
+            rightThrusterParticles.Play();
+        }
+    }
+
+    private void RotateLeft()
+    {
+        Rotate(-directionalThrust);
+        if (!leftThrusterParticles.isPlaying)
+        {
+            leftThrusterParticles.Play();
         }
     }
 

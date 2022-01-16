@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +15,7 @@ public class CollisionHandler : MonoBehaviour
     [SerializeField]    float levelChangeDelay = 5f;
 
     bool isTransitioning = false;
+    bool collisionDisabled = false;
 
     void Start()
     {
@@ -21,10 +23,32 @@ public class CollisionHandler : MonoBehaviour
         sound = GetComponent<AudioSource>();
     }
 
- void OnCollisionEnter(Collision other)
+    void Update()
+    {
+        RespondToDebugKeys();
+    }
+
+
+      
+
+    private void RespondToDebugKeys()
+    {
+
+         if(Input.GetKeyDown(KeyCode.L))
+        {
+            NextLevel();
+        }
+
+        else if(Input.GetKeyDown(KeyCode.C))
+        {
+            collisionDisabled = !collisionDisabled;
+        }
+    }
+
+    void OnCollisionEnter(Collision other)
 
     {
-        if(isTransitioning)
+        if(isTransitioning || collisionDisabled)
         {
             return;
         }
